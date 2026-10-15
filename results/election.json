@@ -1,0 +1,145 @@
+{
+  "ranAt": "2026-10-14T10:14:23.227Z",
+  "summary": {
+    "stop": {
+      "trials": 3,
+      "avgMs": 411,
+      "minMs": 348,
+      "maxMs": 501,
+      "winners": [
+        "lab46-mongo2",
+        "lab46-mongo1",
+        "lab46-mongo3"
+      ],
+      "reasons": [
+        "stepUpRequestSkipDryRun"
+      ],
+      "allDataSurvived": true
+    },
+    "kill": {
+      "trials": 3,
+      "avgMs": 13308,
+      "minMs": 11871,
+      "maxMs": 14453,
+      "winners": [
+        "lab46-mongo2",
+        "lab46-mongo1",
+        "lab46-mongo3"
+      ],
+      "reasons": [
+        "electionTimeout"
+      ],
+      "allDataSurvived": true
+    }
+  },
+  "results": [
+    {
+      "mode": "stop",
+      "trial": 1,
+      "oldPrimary": "192.168.1.210:27041",
+      "oldPrimaryContainer": "lab46-mongo1",
+      "newPrimary": "192.168.1.210:27042",
+      "newPrimaryContainer": "lab46-mongo2",
+      "electionMs": 501,
+      "dockerCommandMs": 5047,
+      "termBefore": 1,
+      "termAfter": 2,
+      "lastElectionReason": "stepUpRequestSkipDryRun",
+      "electionTimeoutMillis": 10000,
+      "numVotesNeeded": 2,
+      "markerSurvived": true,
+      "speciesBefore": 25,
+      "speciesAfter": 25
+    },
+    {
+      "mode": "stop",
+      "trial": 2,
+      "oldPrimary": "192.168.1.210:27042",
+      "oldPrimaryContainer": "lab46-mongo2",
+      "newPrimary": "192.168.1.210:27041",
+      "newPrimaryContainer": "lab46-mongo1",
+      "electionMs": 384,
+      "dockerCommandMs": 4080,
+      "termBefore": 2,
+      "termAfter": 3,
+      "lastElectionReason": "stepUpRequestSkipDryRun",
+      "electionTimeoutMillis": 10000,
+      "numVotesNeeded": 2,
+      "markerSurvived": true,
+      "speciesBefore": 25,
+      "speciesAfter": 25
+    },
+    {
+      "mode": "stop",
+      "trial": 3,
+      "oldPrimary": "192.168.1.210:27041",
+      "oldPrimaryContainer": "lab46-mongo1",
+      "newPrimary": "192.168.1.210:27043",
+      "newPrimaryContainer": "lab46-mongo3",
+      "electionMs": 348,
+      "dockerCommandMs": 4160,
+      "termBefore": 3,
+      "termAfter": 4,
+      "lastElectionReason": "stepUpRequestSkipDryRun",
+      "electionTimeoutMillis": 10000,
+      "numVotesNeeded": 2,
+      "markerSurvived": true,
+      "speciesBefore": 25,
+      "speciesAfter": 25
+    },
+    {
+      "mode": "kill",
+      "trial": 1,
+      "oldPrimary": "192.168.1.210:27043",
+      "oldPrimaryContainer": "lab46-mongo3",
+      "newPrimary": "192.168.1.210:27042",
+      "newPrimaryContainer": "lab46-mongo2",
+      "electionMs": 11871,
+      "dockerCommandMs": 1075,
+      "termBefore": 4,
+      "termAfter": 5,
+      "lastElectionReason": "electionTimeout",
+      "electionTimeoutMillis": 10000,
+      "numVotesNeeded": 2,
+      "markerSurvived": true,
+      "speciesBefore": 25,
+      "speciesAfter": 25
+    },
+    {
+      "mode": "kill",
+      "trial": 2,
+      "oldPrimary": "192.168.1.210:27042",
+      "oldPrimaryContainer": "lab46-mongo2",
+      "newPrimary": "192.168.1.210:27041",
+      "newPrimaryContainer": "lab46-mongo1",
+      "electionMs": 14453,
+      "dockerCommandMs": 1309,
+      "termBefore": 5,
+      "termAfter": 6,
+      "lastElectionReason": "electionTimeout",
+      "electionTimeoutMillis": 10000,
+      "numVotesNeeded": 2,
+      "markerSurvived": true,
+      "speciesBefore": 25,
+      "speciesAfter": 25
+    },
+    {
+      "mode": "kill",
+      "trial": 3,
+      "oldPrimary": "192.168.1.210:27041",
+      "oldPrimaryContainer": "lab46-mongo1",
+      "newPrimary": "192.168.1.210:27043",
+      "newPrimaryContainer": "lab46-mongo3",
+      "electionMs": 13601,
+      "dockerCommandMs": 892,
+      "termBefore": 6,
+      "termAfter": 7,
+      "lastElectionReason": "electionTimeout",
+      "electionTimeoutMillis": 10000,
+      "numVotesNeeded": 2,
+      "markerSurvived": true,
+      "speciesBefore": 25,
+      "speciesAfter": 25
+    }
+  ]
+}

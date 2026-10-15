@@ -1,0 +1,95 @@
+{
+  "ranAt": "2026-10-14T10:15:33.090Z",
+  "partA": {
+    "w:1": {
+      "n": 200,
+      "avgMs": 10.325,
+      "p50Ms": 7.973,
+      "p95Ms": 24.086,
+      "maxMs": 60.177,
+      "totalMs": 2064.9
+    },
+    "w:\"majority\"": {
+      "n": 200,
+      "avgMs": 48.395,
+      "p50Ms": 35.526,
+      "p95Ms": 134.35,
+      "maxMs": 415.114,
+      "totalMs": 9679.1
+    },
+    "majorityToW1Ratio": 4.69
+  },
+  "partB": {
+    "primary": "192.168.1.210:27043",
+    "secondaries": [
+      "192.168.1.210:27041",
+      "192.168.1.210:27042"
+    ],
+    "runId": "6acf561b805c343badd49511",
+    "w1": {
+      "ok": true,
+      "ms": 43,
+      "insertedId": "6acf561d805c343badd49512"
+    },
+    "majority": {
+      "ok": false,
+      "ms": 3055,
+      "errorName": "MongoWriteConcernError",
+      "code": 64,
+      "codeName": "WriteConcernFailed",
+      "message": "waiting for replication timed out",
+      "errInfo": {
+        "wtimeout": true,
+        "writeConcern": {
+          "w": "majority",
+          "wtimeout": 3000,
+          "provenance": "clientSupplied"
+        }
+      }
+    },
+    "readsOnPrimary": {
+      "localSees": [
+        "w1",
+        "majority"
+      ],
+      "majoritySees": []
+    },
+    "primaryStepDownMs": 10142,
+    "writeAfterStepDown": "MongoServerError: not primary",
+    "newPrimary": "192.168.1.210:27041",
+    "afterRollback": [
+      "new-primary-write"
+    ],
+    "w1RolledBack": true,
+    "rollbackFiles": [
+      "/data/db/rollback/d7bc6ee2-6f1c-4f2b-9f73-938b9331f6f1/removed.2026-10-14T10-15-28.0.bson"
+    ],
+    "rollbackFileContents": [
+      "{\"_id\":{\"$oid\":\"6acf561d805c343badd49513\"},\"runId\":\"6acf561b805c343badd49511\",\"kind\":\"majority\",\"note\":\"needs 2 of 3 members\"}",
+      "{\"_id\":{\"$oid\":\"6acf561d805c343badd49512\"},\"runId\":\"6acf561b805c343badd49511\",\"kind\":\"w1\",\"note\":\"acknowledged by primary only\"}"
+    ],
+    "log": [
+      "primary: lab46-mongo3 (27043); secondaries: lab46-mongo1 (27041), lab46-mongo2 (27042)",
+      "docker kill lab46-mongo1 lab46-mongo2  (simulate losing both secondaries)",
+      "w:1 insert           -> ACKNOWLEDGED in 43 ms",
+      "w:\"majority\" insert  -> MongoWriteConcernError after 3055 ms: code 64 WriteConcernFailed \"waiting for replication timed out\"",
+      "read on primary, readConcern \"local\"   : sees [w1, majority]",
+      "read on primary, readConcern \"majority\": sees []",
+      "  -> the majority write FAILED from the client's view but IS stored on the primary (not majority-committed)",
+      "old primary stepped down to SECONDARY 10.1 s after losing the secondaries",
+      "w:1 insert after step-down -> MongoServerError: not primary",
+      "docker kill lab46-mongo3 (old primary, holding the un-replicated writes)",
+      "docker start lab46-mongo1 lab46-mongo2",
+      "secondaries elected lab46-mongo1 (27041) as new primary (18.7 s) - it never saw the w:1 / majority docs",
+      "wrote a new document on the new primary with w:\"majority\" (history has now diverged)",
+      "docker start lab46-mongo3 (old primary rejoins)",
+      "documents for this run after rejoin: [new-primary-write]",
+      "VERDICT: the w:1 write was ACKNOWLEDGED to the client but has been ROLLED BACK",
+      "rollback files on lab46-mongo3: ",
+      "    /data/db/rollback/d7bc6ee2-6f1c-4f2b-9f73-938b9331f6f1/removed.2026-10-14T10-15-28.0.bson",
+      "rolled-back documents saved in those files (bsondump):",
+      "    {\"_id\":{\"$oid\":\"6acf561d805c343badd49513\"},\"runId\":\"6acf561b805c343badd49511\",\"kind\":\"majority\",\"note\":\"needs 2 of 3 members\"}",
+      "    {\"_id\":{\"$oid\":\"6acf561d805c343badd49512\"},\"runId\":\"6acf561b805c343badd49511\",\"kind\":\"w1\",\"note\":\"acknowledged by primary only\"}"
+    ]
+  }
+}

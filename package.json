@@ -1,0 +1,22 @@
+{
+  "name": "lab4-6-replica-set",
+  "version": "1.0.0",
+  "description": "Lab 4 & 6: MongoDB replica set experiments and species CRUD driver integration",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "seed": "node src/seed.js",
+    "election": "node src/election-test.js",
+    "writeconcern": "node src/write-concern-test.js",
+    "species": "node src/species.js",
+    "demo": "node src/species.js demo",
+    "status": "node src/status.js",
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "dependencies": {
+    "mongodb": "^6.12.0"
+  }
+}

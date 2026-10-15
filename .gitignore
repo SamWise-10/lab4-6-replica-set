@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Personal review and study notes
+REVIEW.md
+
+# Environment and secrets
+.env
+.env.local
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

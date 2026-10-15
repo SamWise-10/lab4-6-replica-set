@@ -1,0 +1,81 @@
+# Lab 4 & 6 - Three-member MongoDB replica set (rs0)
+#
+# Each node listens on a UNIQUE port (27041 / 27042 / 27043) and is published on
+# the same port on the host. The replica set members are registered as
+# host.docker.internal:<port>, a name that resolves both on the Windows host
+# (Docker Desktop) and inside the containers (extra_hosts -> host-gateway).
+# This lets drivers on the host discover and fail over between all members.
+#
+# Non-default ports and "lab46-" container names are used so this lab never
+# collides with other MongoDB containers already using 27017/27018.
+
+name: lab46
+
+x-mongo-common: &mongo-common
+  image: mongo:8.0
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  networks: [rsnet]
+  restart: "no"
+
+services:
+  mongo1:
+    <<: *mongo-common
+    container_name: lab46-mongo1
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27041"]
+    ports: ["27041:27041"]
+    volumes: [mongo1-data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--port", "27041", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  mongo2:
+    <<: *mongo-common
+    container_name: lab46-mongo2
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27042"]
+    ports: ["27042:27042"]
+    volumes: [mongo2-data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--port", "27042", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  mongo3:
+    <<: *mongo-common
+    container_name: lab46-mongo3
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27043"]
+    ports: ["27043:27043"]
+    volumes: [mongo3-data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--port", "27043", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  # One-shot container: initiates the replica set (idempotent) and exits.
+  mongo-init:
+    image: mongo:8.0
+    container_name: lab46-mongo-init
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks: [rsnet]
+    depends_on:
+      mongo1: { condition: service_healthy }
+      mongo2: { condition: service_healthy }
+      mongo3: { condition: service_healthy }
+    volumes:
+      - ./scripts/init-replica.js:/scripts/init-replica.js:ro
+    command: ["mongosh", "--host", "192.168.1.210:27041", "--quiet", "/scripts/init-replica.js"]
+    restart: "no"
+
+networks:
+  rsnet: {}
+
+volumes:
+  mongo1-data: {}
+  mongo2-data: {}
+  mongo3-data: {}
+
